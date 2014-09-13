@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Force-Directed Graph</title>
+<style>
+
+.bubble {
+  fill: #4C6FD2;
+  stroke: #000000;
+  stroke-width: 9;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    root;
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var x = new Object();
+var dummyData = [
+  { x: 50, y: 50 }
+]
+
+drag = d3.behavior.drag()
+  .origin(Object)
+  .on("drag", function(d) {
+    d.x = d3.event.x;
+    d.y = d3.event.y;
+    d3.event.sourceEvent.stopPropagation();
+    update();
+  });
+
+
+
+
+  update();
+
+
+function update() {
+
+  console.log("running update()");
+circle = svg.selectAll("circle")
+  .data(dummyData);
+  
+
+  
+  circle.enter()
+  .append("circle")
+  //.attr("cx",function(d){
+  //  console.log(d);
+  //  return d.x;
+  //})
+  //.attr("cy",function(d){
+  //  return d.y;
+  //})
+  .attr("r",30)
+  .attr("class","bubble")
+  .call(drag)
+  ;
+
+circle.attr("transform", function(d) { return "translate("+d.x+","+d.y+")"; });
+
+ 
+
+}
+
+svg.on("click",function(){
+	if (d3.event.defaultPrevented) return; 
+  var mouseCoord = (d3.mouse(this));
+  console.log(mouseCoord);
+  var obj = { x: mouseCoord[0], y: mouseCoord[1] }
+  dummyData.push(obj);
+  update()
+})
+
+</script>
